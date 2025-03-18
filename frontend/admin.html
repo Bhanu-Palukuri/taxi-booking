@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Taxi Booking - Admin Panel</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Inline CSS for admin panel styling */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f8f9fa;
+    }
+    h1, h2 {
+      color: #007bff;
+    }
+    .hidden {
+      display: none;
+    }
+    .container {
+      max-width: 900px;
+      margin: auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    table, th, td {
+      border: 1px solid #ddd;
+    }
+    th, td {
+      padding: 8px;
+      text-align: left;
+    }
+    button {
+      padding: 6px 12px;
+      margin: 2px;
+      border: none;
+      border-radius: 3px;
+      background-color: #007bff;
+      color: #fff;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    input, select {
+      padding: 5px;
+      margin: 5px;
+    }
+    .form-section {
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <!-- The entire admin content is hidden until the password is verified -->
+  <div id="adminContent" class="container hidden">
+    <h1>Admin Panel</h1>
+    <h2>Drivers Management</h2>
+    
+    <!-- Section for creating a new driver -->
+    <div class="form-section">
+      <h3>Create New Driver</h3>
+      <form id="createDriverForm">
+        <input type="text" id="newDriverName" placeholder="Driver Name" required>
+        <input type="text" id="newDriverLicense" placeholder="Driver License" required>
+        <!-- Verification defaults to false; admin can toggle later -->
+        <button type="submit">Create Driver</button>
+      </form>
+      <p id="driverFormResult"></p>
+    </div>
+
+    <!-- List of drivers -->
+    <div id="driversSection">
+      <h3>Drivers List</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>License</th>
+            <th>Verified</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="driversTableBody">
+          <!-- Drivers will be populated here -->
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Rides Management</h2>
+    <!-- List of rides with ability to update status -->
+    <div id="ridesSection">
+      <h3>Rides List</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Customer</th>
+            <th>Pickup</th>
+            <th>Drop</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="ridesTableBody">
+          <!-- Rides will be populated here -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+
+    // --------------------------
+    // Global Backend URL (Replace with your EC2 IP if needed)
+    // --------------------------
+    const backendURL = "http://3.232.46.241:8000/api";
+    
+    // --------------------------
+    // Admin Panel: Password Protection
+    // --------------------------
+    const ADMIN_PASSWORD = "adminpass"; // Change this to a secure password
+    let enteredPassword = prompt("Enter Admin Password:");
+    if (enteredPassword !== ADMIN_PASSWORD) {
+      alert("Access Denied!");
+      // Redirect to home page or simply hide the page content
+      document.body.innerHTML = "<h2>Access Denied</h2>";
+    } else {
+      // Show admin content if password is correct
+      document.getElementById("adminContent").classList.remove("hidden");
+      // Load data for admin functions
+      fetchDrivers();
+      fetchRides();
+    }
+
+
+    // --------------------------
+    // DRIVERS MANAGEMENT FUNCTIONS
+    // --------------------------
+    // Fetch all drivers from backend
+    function fetchDrivers() {
+      fetch(`${backendURL}/drivers/`)
+        .then(response => response.json())
+        .then(data => {
+          const tableBody = document.getElementById("driversTableBody");
+          tableBody.innerHTML = "";
+          data.forEach(driver => {
+            let row = `
+              <tr>
+                <td>${driver.id}</td>
+                <td>${driver.name}</td>
+                <td>${driver.license_number}</td>
+                <td>${driver.is_verified ? "Yes" : "No"}</td>
+                <td>
+                  <button onclick="toggleVerifyDriver(${driver.id}, ${driver.is_verified})">
+                    ${driver.is_verified ? "Unverify" : "Verify"}
+                  </button>
+                  <button onclick="deleteDriver(${driver.id})">Delete</button>
+                </td>
+              </tr>
+            `;
+            tableBody.innerHTML += row;
+          });
+        })
+        .catch(error => console.error("Error fetching drivers:", error));
+    }
+
+    // Create a new driver
+    document.getElementById("createDriverForm")?.addEventListener("submit", function(event) {
+      event.preventDefault();
+      const name = document.getElementById("newDriverName").value;
+      const license = document.getElementById("newDriverLicense").value;
+      
+      fetch(`${backendURL}/drivers/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: name,
+          license_number: license,
+          is_verified: false
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById("driverFormResult").innerText = "Driver created successfully!";
+        fetchDrivers();
+      })
+      .catch(error => console.error("Error creating driver:", error));
+    });
+
+    // Toggle driver verification status
+    function toggleVerifyDriver(driverId, currentStatus) {
+      // Update driver verification status
+      fetch(`${backendURL}/drivers/${driverId}/`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          is_verified: !currentStatus
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        fetchDrivers();
+      })
+      .catch(error => console.error("Error updating driver:", error));
+    }
+
+    // Delete a driver
+    function deleteDriver(driverId) {
+      if (confirm("Are you sure you want to delete this driver?")) {
+        fetch(`${backendURL}/drivers/${driverId}/`, {
+          method: "DELETE"
+        })
+        .then(response => {
+          if (response.ok) {
+            fetchDrivers();
+          } else {
+            alert("Error deleting driver");
+          }
+        })
+        .catch(error => console.error("Error deleting driver:", error));
+      }
+    }
+
+    // --------------------------
+    // RIDES MANAGEMENT FUNCTIONS
+    // --------------------------
+    // Fetch all rides
+    function fetchRides() {
+      fetch(`${backendURL}/rides/`)
+        .then(response => response.json())
+        .then(data => {
+          const tableBody = document.getElementById("ridesTableBody");
+          tableBody.innerHTML = "";
+          data.forEach(ride => {
+            // Assuming the API returns the customer field as an ID; adjust if you have customer name details
+            let row = `
+              <tr>
+                <td>${ride.id}</td>
+                <td>${ride.customer}</td>
+                <td>${ride.pickup_location}</td>
+                <td>${ride.drop_location}</td>
+                <td>
+                  <select onchange="updateRideStatus(${ride.id}, this.value)">
+                    <option value="Pending" ${ride.ride_status === "Pending" ? "selected" : ""}>Pending</option>
+                    <option value="Accepted" ${ride.ride_status === "Accepted" ? "selected" : ""}>Accepted</option>
+                    <option value="Completed" ${ride.ride_status === "Completed" ? "selected" : ""}>Completed</option>
+                  </select>
+                </td>
+                <td>
+                  <!-- Additional actions if needed -->
+                </td>
+              </tr>
+            `;
+            tableBody.innerHTML += row;
+          });
+        })
+        .catch(error => console.error("Error fetching rides:", error));
+    }
+
+    // Update ride status
+    function updateRideStatus(rideId, newStatus) {
+      fetch(`${backendURL}/rides/${rideId}/`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ride_status: newStatus })
+      })
+      .then(response => response.json())
+      .then(data => {
+        fetchRides();
+      })
+      .catch(error => console.error("Error updating ride:", error));
+    }
+  </script>
+</body>
+</html>

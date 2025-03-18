@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taxi Booking - Book a Ride</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="booking.html" class="active">Book a Ride</a>
+        <a href="fare.html">Fare Calculator</a>
+        <a href="history.html">Ride History</a>
+    </nav>
+
+    <section class="booking-container">
+        <h1>📅 Book a Taxi Ride</h1>
+        <form id="bookingForm">
+            <input type="text" id="customerName" placeholder="Your Name" required>
+            <input type="email" id="customerEmail" placeholder="Your Email" required>
+            <input type="text" id="customerPhone" placeholder="Your Phone Number" required>
+            <input type="text" id="pickup" placeholder="Pickup Location" required>
+            <input type="text" id="drop" placeholder="Drop Location" required>
+            <button type="submit">🚕 Confirm Booking</button>
+        </form>
+        <p id="bookingResult"></p>
+    </section>
+
+
+    
+    <script src="app.js"></script>
+</body>
+</html>

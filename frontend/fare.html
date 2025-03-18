@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taxi Booking - Fare Calculator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="booking.html">Book a Ride</a>
+        <a href="fare.html" class="active">Fare Calculator</a>
+        <a href="history.html">Ride History</a>
+    </nav>
+
+    <section class="fare-container">
+        <h1>💰 Fare Calculator</h1>
+        <input type="number" id="distance" placeholder="Enter Distance (km)">
+        <button onclick="calculateFare()">🧾 Calculate Fare</button>
+        <p id="fareResult"></p>
+    </section>
+
+    <script src="app.js"></script>
+</body>
+</html>

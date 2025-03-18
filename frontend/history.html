@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taxi Booking - Ride History</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Your Ride History</h1>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="booking.html">Book a Ride</a>
+        <a href="fare.html">Fare Calculator</a>
+        <a href="history.html" class="active">Ride History</a>
+    </nav>
+
+    <h2>Past Rides</h2>
+    
+    <label for="statusFilter">Filter by Status:</label>
+    <select id="statusFilter">
+        <option value="">All</option>
+        <option value="Completed">Completed</option>
+        <option value="Pending">Pending</option>
+        <option value="Cancelled">Cancelled</option>
+    </select>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Pickup</th>
+                <th>Drop</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody id="rideHistory">
+            <tr><td colspan="3">Loading ride history...</td></tr>
+        </tbody>
+    </table>
+
+    <script src="app.js"></script>
+</body>
+</html>
