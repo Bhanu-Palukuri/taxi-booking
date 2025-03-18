@@ -31,6 +31,8 @@ ALLOWED_HOSTS = ['3.232.46.241']
 # Application definition
 
 INSTALLED_APPS = [
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -40,7 +42,16 @@ INSTALLED_APPS = [
 
     'booking',
     'rest_framework',
+    'corsheaders',
 ]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://taxi-booking-fronted.s3-website-us-east-1.amazonaws.com",
+]
+
+
+CORS_ALLOW_ALL_ORIGINS = True
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
