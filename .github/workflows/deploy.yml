@@ -37,7 +37,7 @@ jobs:
           args: --acl public-read --delete
         env:
           AWS_S3_BUCKET: "taxi-booking-fronted"
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_ACCESS_KEY_ID: "ASIA5NPQ6YCDOY72LWQF"
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
           SOURCE_DIR: "frontend"  # Change this to your frontend directory
