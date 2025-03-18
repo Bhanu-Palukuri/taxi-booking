@@ -20,6 +20,13 @@ class RideViewSet(viewsets.ModelViewSet):
     queryset = Ride.objects.all()
     serializer_class = RideSerializer
 
+    @action(detail=True, methods=['patch'])
+    def update_status(self, request, pk=None):
+        ride = self.get_object()
+        ride.ride_status = request.data.get("ride_status")
+        ride.save()
+        return Response({"status": "updated"})
+
     # API Endpoint for fare calculation
     @action(detail=False, methods=['POST'])
     def calculate_fare(self, request):
@@ -37,3 +44,5 @@ class RideViewSet(viewsets.ModelViewSet):
             return Response({"distance_km": distance_km, "fare": fare})
         except ValueError as e:
             return Response({"error": str(e)}, status=400)
+        
+
