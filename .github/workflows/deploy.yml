@@ -20,7 +20,7 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            cd /home/ubuntu/Taxi-Booking
+            cd /home/ubuntu/taxi-booking
             if [ ! -d ".git" ]; then
               echo "Error: Not inside a Git repository!"
               exit 1
