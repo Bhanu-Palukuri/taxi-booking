@@ -40,4 +40,4 @@ class Migration(migrations.Migration):
             name='phone',
             field=models.CharField(max_length=15, unique=True),
         ),
-    ]
+    ] 
