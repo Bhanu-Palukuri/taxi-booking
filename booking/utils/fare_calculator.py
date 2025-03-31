@@ -12,3 +12,4 @@ def calculate_fare(distance_km, base_fare=5, per_km_rate=2):
 
     total_fare = base_fare + (distance_km * per_km_rate)
     return round(total_fare, 2)
+  
