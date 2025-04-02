@@ -1,4 +1,4 @@
-const backendURL = "http://3.232.46.241:8000/api"; // ✅ Replace with your actual EC2 API URL
+const backendURL = "http://35.170.202.19:8000/api"; // ✅ Replace with your actual EC2 API URL
 
 
 // Book a Ride
